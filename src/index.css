@@ -1,11 +1,12 @@
 body {
   box-sizing: border-box;
+  margin: 0;
 }
 
 .dndflow {
   /* flex-direction: column; */
   display: flex;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   height: 100%;
 }
 
@@ -20,8 +21,19 @@ body {
   margin-bottom: 10px;
 }
 
+.flex-container {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.flex-container > div {
+  margin-left: 10px;
+}
+
 .dndflow .dndnode1 {
-  height: 10px;
+  height: 30px;
   padding: 4px;
   border: 1px solid #1a192b;
   border-radius: 3px;
@@ -34,7 +46,7 @@ body {
 }
 
 .dndflow .dndnode2 {
-  height: 10px;
+  height: 30px;
   padding: 4px;
   border: 1px solid #534dce;
   border-radius: 3px;
@@ -47,7 +59,7 @@ body {
 }
 
 .dndflow .dndnode3 {
-  height: 10px;
+  height: 30px;
   padding: 4px;
   border: 1px solid #1a192b;
   border-radius: 3px;
@@ -60,7 +72,7 @@ body {
 }
 
 .dndflow .dndnode4 {
-  height: 10px;
+  height: 30px;
   padding: 4px;
   border: 1px solid #1a192b;
   border-radius: 3px;
@@ -70,6 +82,55 @@ body {
   justify-content: center;
   align-items: center;
   cursor: grab;
+}
+
+.switchMode {
+  height: 30px;
+  border: 1px solid #1a192b;
+  border-radius: 3px;
+  cursor: grab;
+}
+
+.rectangle-close-icon {
+  position: absolute;
+  top: -5px;
+  right: -4px;
+  background-color: #3B3838;
+  border-radius: 40px;
+  width: 7px;
+  height: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+}
+
+.circle-close-icon {
+  position: absolute;
+  top: 0px;
+  right: -2px;
+  background-color: #3B3838;
+  border-radius: 40px;
+  width: 7px;
+  height: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+}
+
+.dottedrectangle-close-icon {
+  position: absolute;
+  top: -4px;
+  right: -3px;
+  background-color: #3B3838;
+  border-radius: 40px;
+  width: 7px;
+  height: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
 }
 
 .dndflow .dndnode.input {
@@ -90,14 +151,23 @@ body {
 }
 
 .sideBar {
-  margin-top: 30px;
-  flex-basis: 50px;
+  /* margin-top: 30px; */
+  flex-basis: 100px;
   background-color: darkgrey !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.react-flow__attribution a {
+  /* visibility: hidden; */
+  display: none;
 }
 
 .react-flow__controls {
-  top: 10px;
-  bottom: auto;
+  left: auto;
+  right: 10px;
+  /* bottom: auto; */
 }
 
 @media screen and (min-width: 1500px) {

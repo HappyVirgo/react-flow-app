@@ -1,9 +1,20 @@
 import React from "react";
 import { Handle } from "react-flow-renderer";
 
-const RectangleNode = ({ data }) => {
+const RectangleNode = ({ data, id }) => {
+
   return (
     <div style={{ height: "20px", width: "45px", borderColor: "green", borderStyle: "solid", borderRadius: 3 }}>
+        <div
+            className="rectangle-close-icon"
+            style={{ cursor: "pointer" }}
+            onClick={(e) =>{
+              data?.deleteNode(id)}
+            }
+        >
+            <p style={{fontSize: "6px", color: "white"}}>X</p>
+        </div>
+        <div id={data.id}>{data.label}</div>
        <Handle
         type="target"
         position="top"
@@ -31,7 +42,7 @@ const RectangleNode = ({ data }) => {
             borderColor: "black" 
        }}
       />
-      <div id={data.id}>{data.label}</div>
+      
       <Handle
         type="source"
         position="right"
@@ -62,7 +73,7 @@ const RectangleNode = ({ data }) => {
   );
 };
 
-const CircleNode1 = ({ data }) => {
+const CircleNode1 = ({ data, id }) => {
   return (
     <div
       style={{
@@ -73,15 +84,24 @@ const CircleNode1 = ({ data }) => {
         width: "20px",
       }}
     >
-      <div id={data.id}>{data.label}</div>
+        <div
+            className="circle-close-icon"
+            style={{ cursor: "pointer" }}
+            onClick={(e) =>{
+              data?.deleteNode(id)}
+            }
+        >
+            <p style={{fontSize: "6px", color: "white"}}>X</p>
+        </div>
+        <div id={data.id}>{data.label}</div>
       <Handle
         type="source"
         position="bottom"
         id={`${data.id}.left`}
         style={{ 
-            bottom: 0,
-            opacity: 0,
-            backgroundColor: "white",
+            bottom: -2,
+            backgroundColor: "yellow",
+            borderStyle: "solid",
             borderColor: "black" 
        }}
       />
@@ -89,7 +109,7 @@ const CircleNode1 = ({ data }) => {
   );
 };
 
-const CircleNode2 = ({ data }) => {
+const CircleNode2 = ({ data, id }) => {
   return (
     <div
       style={{
@@ -100,35 +120,23 @@ const CircleNode2 = ({ data }) => {
         width: "20px",
       }}
       >
+        <div
+            className="circle-close-icon"
+            style={{ cursor: "pointer" }}
+            onClick={(e) =>{
+              data?.deleteNode(id)}
+            }
+        >
+            <p style={{fontSize: "6px", color: "white"}}>X</p>
+        </div>
       <Handle
         type="target"
         position="top"
         id={`${data.id}.left`}
         style={{ 
-            opacity: 0,
-            top: 0,
-            backgroundColor: "white",
-            borderColor: "black" 
-       }}
-      />
-      <Handle
-        type="target"
-        position="left"
-        id={`${data.id}.left`}
-        style={{ 
-            opacity: 0,
-            backgroundColor: "white",
-            borderColor: "black" 
-       }}
-      />
-      <div id={data.id}>{data.label}</div>
-      <Handle
-        type="target"
-        position="right"
-        id={`${data.id}.left`}
-        style={{ 
-            opacity: 0,
-            backgroundColor: "white",
+            top: -2,
+            backgroundColor: "#70AD47",
+            borderStyle: "solid",
             borderColor: "black" 
        }}
       />
@@ -136,9 +144,18 @@ const CircleNode2 = ({ data }) => {
   );
 };
 
-const DottedRectangleNode = ({ data }) => {
+const DottedRectangleNode = ({ data, id }) => {
     return (
         <div style={{ height: "250px", width: "200px", borderStyle: "dotted", borderColor: "blue" }}>
+        <div
+            className="dottedrectangle-close-icon"
+            style={{ cursor: "pointer" }}
+            onClick={(e) =>{
+              data?.deleteNode(id)}
+            }
+        >
+            <p style={{fontSize: "6px", color: "white"}}>X</p>
+        </div>
            <Handle
             type="source"
             position="top"
@@ -169,8 +186,6 @@ const DottedRectangleNode = ({ data }) => {
         </div>
       );
 }
-
-
 
 export const nodeTypes = {
   circle1: CircleNode1,
