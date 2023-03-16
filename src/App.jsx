@@ -1,25 +1,29 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import ReactFlow, {
-    ReactFlowProvider,
-    addEdge,
-    useNodesState,
-    useEdgesState,
-    Controls,
-    MiniMap
-} from 'react-flow-renderer';
-import styled, { ThemeProvider } from 'styled-components';
-import { darkTheme, lightTheme } from './theme' 
-import 'reactflow/dist/style.css';
-import './index.css';
-import Sidebar from './Sidebar';
-import { nodeTypes } from './Nodes';
-import Modal from './Modal/Modal';
-
-const initialNodes = [
-];
+  ReactFlowProvider,
+  addEdge,
+  useNodesState,
+  useEdgesState,
+  Controls,
+  MarkerType,
+  MiniMap,
+} from "react-flow-renderer";
+import styled, { ThemeProvider } from "styled-components";
+import { darkTheme, lightTheme } from "./theme";
+import Sidebar from "./Sidebar";
+import { nodeTypes } from "./Nodes";
+import Modal from "./Modal";
+import "reactflow/dist/style.css";
+import "./index.css";
+import MenuBar from "./MenuBar";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
+
+let entityNodeCount = 0;
+let eventNodeCount = 0;
+let testNodeCount = 0;
+let causeNodeCount = 0;
 
 const ReactFlowStyled = styled(ReactFlow)`
   background-color: ${(props) => props.theme.bg};
@@ -31,207 +35,294 @@ const ControlsStyled = styled(Controls)`
     height: 30px;
     background-color: ${(props) => props.theme.controlsBg};
     color: ${(props) => props.theme.controlsColor};
-    border-bottom: 1px solid ${(props) => props.theme.controlsBorder};
+    border: 1px solid ${(props) => props.theme.controlsBorder};
     &:hover {
       background-color: ${(props) => props.theme.controlsBgHover};
     }
     path {
       fill: currentColor;
     }
-    span {
-        font-size: 30px;
-    }
   }
 `;
 
+const defaultEdgeOptions = {
+  style: { strokeWidth: 2 },
+  type: "default",
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+  },
+};
+
 const DnDFlow = ({ toggleMode }) => {
-    const reactFlowWrapper = useRef(null);
-    const textRef = useRef(null);
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-    const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const [selectedNode, setSelectedNode] = useState(null);
-    const [isSelected, setIsSelected] = useState(false);
+  const reactFlowWrapper = useRef(null);
+  const textRef = useRef(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [isSelected, setIsSelected] = useState(false);
+  const [nodeName, setNodeName] = useState("");
+  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
+  const [color, setColor] = useState("");
 
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, markerEnd: { type: "arrowclosed" } }, eds)), []);
-    const onDragOver = useCallback((event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-    }, []);
-
-    const deleteNode = (id) => {
-        setNodes((prev) => prev.filter((item) => item.id !== id))
+  useEffect(() => {
+    const node = nodes.filter((node) => {
+      if (node.selected) return true;
+      return false;
+    });
+    if (node[0]) {
+      setSelectedNode(node[0]);
+    } else {
+      setSelectedNode("");
+      setIsSelected(false);
     }
-    
-    const onDrop = useCallback(
-        (event) => {
-            event.preventDefault();
-            const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-            const type = event.dataTransfer.getData('application/reactflow');
-            if (typeof type === 'undefined' || !type) {
-                return;
-            }
-            const position = reactFlowInstance.project({
-                x: event.clientX - reactFlowBounds.left,
-                y: event.clientY - reactFlowBounds.top,
-            });
-            // console.log(event.dataTransfer)
-            if(type == "entity") {
-                const newNode = {
-                    id: getId(),
-                    type: "dottedrectangle",
-                    position,
-                    data: {content: type, deleteNode:deleteNode},
-                };
-                setNodes((nds) => nds.concat(newNode));
-                setSelectedNode(newNode.id);
-            } else if(type == "event") {
-                const newNode = {
-                    id: getId(),
-                    type: "circle1",
-                    position,
-                    data: {content: type, deleteNode:deleteNode},
-                };
-                setNodes((nds) => nds.concat(newNode));
-                setSelectedNode(newNode.id);
-            } else if(type == "test") {
-                const newNode = {
-                    id: getId(),
-                    type: "rectangle",
-                    position,
-                    data: {content: type, deleteNode:deleteNode},
-                };
-                setNodes((nds) => nds.concat(newNode));
-                setSelectedNode(newNode.id);
-            }  else if(type == "cause") {
-                const newNode = {
-                    id: getId(),
-                    type: "circle2",
-                    position,
-                    data: {
-                        content: type, 
-                        deleteNode:deleteNode
-                    },
-                };
-                setNodes((nds) => nds.concat(newNode));
-                setSelectedNode(newNode.id);
-            } 
-           
-        },
-        [reactFlowInstance]
-    );
+  }, [nodes]);
 
-    const nodeViewAll = (e) => {
-        window.alert("ALL NODE")
+  useEffect(() => {
+    setNodeName(selectedNode?.data?.name || "");
+    setDescription(selectedNode?.data?.description || "");
+    setContent(selectedNode?.data?.content || "");
+    setColor(selectedNode?.data?.color || "");
+    // textRef?.current?.focus();
+  }, [selectedNode]);
+
+  const onConnect = (params) => {
+    if (edges.some((edge) => edge.source === params.source && edge.sourceHandle === params.sourceHandle)) {
+      window.alert("Only one link can be setup from an output anchor.");
+      return;
     }
-
-    const clear = (e) => {
-        window.alert("CLEAR")
+    let sourceType = "";
+    let targetType = "";
+    nodes.forEach((node) => {
+      if (node.id === params.source) {
+        sourceType = node.type;
+      }
+      if (node.id === params.target) {
+        targetType = node.type;
+      }
+    });
+    if (sourceType === "dottedrectangle" && targetType !== "dottedrectangle") {
+      window.alert("Entities instances may only link other entities instances.");
+      return;
     }
+    setEdges((eds) => addEdge({ ...params }, eds));
+  };
 
-    const save = (e) => {
-        window.alert("SAVE")
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const onClickNode = () => {
+    console.log("nodeClicked");
+    setIsSelected(true);
+  };
+
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      const type = event.dataTransfer.getData("application/reactflow");
+      if (typeof type === "undefined" || !type) {
+        return;
+      }
+      const position = reactFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+      if (type == "entity") {
+        const newNode = {
+          id: getId(),
+          type: "dottedrectangle",
+          position,
+          data: {
+            name: type,
+            deleteNode: deleteNode,
+            description: "",
+            content: "" + type + ++entityNodeCount,
+            color: "",
+            onClickNode: onClickNode,
+          },
+        };
+        setNodes((nds) => nds.concat(newNode));
+        setSelectedNode(newNode.id);
+      } else if (type == "event") {
+        const newNode = {
+          id: getId(),
+          type: "circle1",
+          position,
+          data: {
+            name: type,
+            deleteNode: deleteNode,
+            description: "",
+            content: "" + type + ++eventNodeCount,
+            color: "",
+            onClickNode: onClickNode,
+          },
+        };
+        setNodes((nds) => nds.concat(newNode));
+        setSelectedNode(newNode.id);
+      } else if (type == "test") {
+        const newNode = {
+          id: getId(),
+          type: "rectangle",
+          position,
+          data: {
+            name: type,
+            deleteNode: deleteNode,
+            description: "",
+            content: "" + type + ++testNodeCount,
+            color: "",
+            onClickNode: onClickNode,
+          },
+        };
+        setNodes((nds) => nds.concat(newNode));
+        setSelectedNode(newNode.id);
+      } else if (type == "cause") {
+        const newNode = {
+          id: getId(),
+          type: "circle2",
+          position,
+          data: {
+            name: type,
+            deleteNode: deleteNode,
+            description: "",
+            content: "" + type + ++causeNodeCount,
+            color: "",
+            onClickNode: onClickNode,
+          },
+        };
+        setNodes((nds) => nds.concat(newNode));
+        setSelectedNode(newNode.id);
+      }
+    },
+    [reactFlowInstance]
+  );
+
+  const viewAll = (e) => {
+    document.getElementsByClassName("react-flow__controls-button react-flow__controls-fitview")[0].click();
+  };
+
+  const deleteNode = (id) => {
+    setNodes((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const clear = (e) => {
+    setEdges([]);
+    setNodes([]);
+  };
+
+  const save = (e) => {
+    if (!reactFlowInstance) {
+      return;
     }
+    const flow = reactFlowInstance.toObject();
+    flow.currentId = id;
+    flow.entityNodeCount = entityNodeCount;
+    flow.eventNodeCount = eventNodeCount;
+    flow.testNodeCount = testNodeCount;
+    flow.causeNodeCount = causeNodeCount;
 
-    const [nodeName, setNodeName] = useState("Node 1");
+    const downloadLink = document.createElement("a");
+    const fileBlob = new Blob([JSON.stringify(flow)], {
+      type: "application/json",
+    });
+    let d = new Date();
+    let name =
+      "node-flow-" +
+      d.getFullYear() +
+      "-" +
+      d.getMonth() +
+      "-" +
+      d.getDay() +
+      "-" +
+      d.getHours() +
+      "-" +
+      d.getMinutes() +
+      "-" +
+      d.getSeconds() +
+      "-" +
+      d.getMilliseconds() +
+      ".json";
+    downloadLink.href = URL.createObjectURL(fileBlob);
+    downloadLink.download = name;
+    downloadLink.click();
+  };
 
-    useEffect(() =>{
-        const node = nodes.filter((node) => {
-            if(node.selected) return true;
-            return false;
-        });
-        if(node[0]) {
-            setSelectedNode(node[0]);
-            setIsSelected(true);
-        } else {
-            setSelectedNode("");
-            setIsSelected(false);
-        }
-    }, [nodes]);
+  const load = async (e) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const text = e.target.result;
+      const flow = JSON.parse(text);
+      console.log(flow);
 
-    useEffect(() => {
-        setNodeName(selectedNode?.data?.content || selectedNode);
-    }, [selectedNode]);
+      if (flow) {
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        id = flow.currentId;
+        entityNodeCount = flow.entityNodeCount;
+        eventNodeCount = flow.eventNodeCount;
+        testNodeCount = flow.testNodeCount;
+        causeNodeCount = flow.causeNodeCount;
+      }
+    };
+    reader.readAsText(e.target.files[0]);
+  };
 
-    useEffect(() => {
-        textRef?.current?.focus();
-    }, [selectedNode]);
-
-    useEffect(() => {
-        setNodes((nds) =>
-          nds.map((node) => {
-            if (node.id === selectedNode?.id) {
-              node.data = {
-                ...node.data,
-                content: nodeName || " "
-              };
-            }
-            return node;
-          })
-        );
-      }, [nodeName, setNodes]);
-  
-
-    return (
-        <div className="dndflow" style={{ height:"100vh" }}>
-            <Sidebar toggleMode={toggleMode} />
-            <ReactFlowProvider>
-                <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-                    <div className="flex-container" style={{ width: "100%", position: "fixed", left: 0,  top: "10px", zIndex: "100" }}>
-                            <div>
-                                <button style={{padding: "8px 15px", fontSize: "15px", color: "white", backgroundColor: "#404040"}} onClick={() => nodeViewAll()}>
-                                    View All
-                                </button>
-                            </div>
-                            <div>
-                                <button style={{padding: "8px 15px", fontSize: "15px", color: "white", backgroundColor: "#404040"}} onClick={() => clear()}>
-                                    Clear
-                                </button>
-                            </div>
-                            <div>
-                                <button style={{padding: "8px 15px", fontSize: "15px", color: "white", backgroundColor: "#404040"}} onClick={() => save()}>
-                                    Save
-                                </button>
-                            </div>
-                    </div>
-                    <ReactFlowStyled
-                        nodes={nodes}
-                        edges={edges}
-                        onNodesChange={onNodesChange}
-                        onEdgesChange={onEdgesChange}
-                        onConnect={onConnect}
-                        onInit={setReactFlowInstance}
-                        onDrop={onDrop}
-                        onDragOver={onDragOver}
-                        nodeTypes={nodeTypes}
-                        attributionPosition="top-right"
-                        deleteKeyCode="Delete"
-                    >
-                        <ControlsStyled />
-                    </ReactFlowStyled>
-                </div>
-                <Modal 
-                    isSelected={isSelected}
-                    textRef={textRef}
-                    nodeName={nodeName}
-                    setNodeName={setNodeName}
-                />
-            </ReactFlowProvider>
+  return (
+    <div className="dndflow flex h-screen">
+      <Sidebar toggleMode={toggleMode} />
+      <ReactFlowProvider>
+        <div className="flex-grow h-100" ref={reactFlowWrapper}>
+          <MenuBar viewAll={viewAll} clear={clear} save={save} load={load} />
+          <ReactFlowStyled
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            nodeTypes={nodeTypes}
+            defaultEdgeOptions={defaultEdgeOptions}
+            attributionPosition="top-right"
+            deleteKeyCode="Delete"
+          >
+            <ControlsStyled className="right-2.5 !left-auto" />
+          </ReactFlowStyled>
         </div>
-    );
+        {isSelected && (
+          <Modal
+            setIsSelected={setIsSelected}
+            textRef={textRef}
+            nodeName={nodeName}
+            setNodeName={setNodeName}
+            description={description}
+            setDescription={setDescription}
+            content={content}
+            setContent={setContent}
+            color={color}
+            setColor={setColor}
+          />
+        )}
+      </ReactFlowProvider>
+    </div>
+  );
 };
 
 export default () => {
-    const [mode, setMode] = useState('light');
-    const theme = mode === 'light' ? lightTheme : darkTheme;
-  
-    const toggleMode = () => {
-      setMode((m) => (m === 'light' ? 'dark' : 'light'));
-    };
-  
-    return (
-      <ThemeProvider theme={theme}>
-        <DnDFlow toggleMode={toggleMode} />
-      </ThemeProvider>
-    );
+  const [mode, setMode] = useState("light");
+  const theme = mode === "light" ? lightTheme : darkTheme;
+
+  const toggleMode = () => {
+    setMode((m) => (m === "light" ? "dark" : "light"));
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <DnDFlow toggleMode={toggleMode} />
+    </ThemeProvider>
+  );
 };

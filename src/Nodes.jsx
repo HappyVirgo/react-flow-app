@@ -2,72 +2,35 @@ import React from "react";
 import { Handle } from "react-flow-renderer";
 
 const RectangleNode = ({ data, id }) => {
-
   return (
-    <div style={{ height: "20px", width: "45px", borderColor: "green", borderStyle: "solid", borderRadius: 3 }}>
-        <div
-            className="rectangle-close-icon"
-            style={{ cursor: "pointer" }}
-            onClick={(e) =>{
-              data?.deleteNode(id)}
-            }
-        >
-            <p style={{fontSize: "6px", color: "white"}}>X</p>
-        </div>
-        <div id={data.id}>{data.label}</div>
-       <Handle
-        type="target"
-        position="top"
-        id={`${data.id}.top`}
-        style={{ 
-            opacity: 0,
-            borderRadius: 1,
-            top: 0,
-            height: "1px",
-            width: "1px",
-            backgroundColor: "white",
-            borderColor: "black" 
-       }}
-      />
+    <div className="border-test h-8 w-20 border-2 rounded bg-black bg-opacity-10" onClick={data.onClickNode}>
+      <div
+        className="absolute -top-1 -right-1 bg-gray-600 rounded-full w-2 h-2 flex justify-center cursor-pointer"
+        onClick={(e) => {
+          data?.deleteNode(id);
+        }}
+      >
+        <p className="close">X</p>
+      </div>
+      <div className="text-center">{data.content}</div>
+      <Handle type="target" position="top" id={`${id}.top`} className="!opacity-0 !top-0 !w-16 !h-2 !rounded-none" />
       <Handle
         type="source"
         position="left"
-        id={`${data.id}.left`}
-        style={{ 
-            borderRadius: 1,
-            left: -3,
-            height: "10px",
-            backgroundColor: "#FFC000",
-            borderStyle: "solid",
-            borderColor: "black" 
-       }}
+        id={`${id}.left`}
+        className="handle-yellow !w-2 !h-4 !rounded-none !border !border-gray-800"
       />
-      
       <Handle
         type="source"
         position="right"
-        id={`${data.id}.right`}
-        style={{ 
-            borderRadius: 1,
-            right: -3,
-            height: "10px",
-            backgroundColor: "#FF0000",
-            borderStyle: "solid",
-            borderColor: "black" 
-        }}
+        id={`${id}.right`}
+        className="handle-red !w-2 !h-4 !rounded-none !border !border-gray-800"
       />
       <Handle
         type="source"
         position="bottom"
-        id={`${data.id}.bottom`}
-        style={{  
-            borderRadius: 1, 
-            bottom: -3,
-            width: "15px",
-            backgroundColor: "#70AD47",
-            borderStyle: "solid",
-            borderColor: "black" 
-        }}
+        id={`${id}.bottom`}
+        className="handle-green !w-4 !h-2 !rounded-none !border !border-gray-800"
       />
     </div>
   );
@@ -75,121 +38,93 @@ const RectangleNode = ({ data, id }) => {
 
 const CircleNode1 = ({ data, id }) => {
   return (
+    // <div className="flex flex-col items-center" onClick={data.onClickNode}>
     <div
-      style={{
-        borderColor: "yellow",
-        borderStyle: "solid",
-        borderRadius: "100%",
-        height: "20px",
-        width: "20px",
-      }}
+      className="relative border-event h-8 w-8 border-2 rounded-full bg-black bg-opacity-10"
+      onClick={data.onClickNode}
     >
-        <div
-            className="circle-close-icon"
-            style={{ cursor: "pointer" }}
-            onClick={(e) =>{
-              data?.deleteNode(id)}
-            }
-        >
-            <p style={{fontSize: "6px", color: "white"}}>X</p>
-        </div>
-        <div id={data.id}>{data.label}</div>
+      <div className="-mt-7 text-center flex justify-center">
+        <span>{data.content}</span>
+      </div>
+      <div
+        className="absolute top-0 -right-0.5 bg-gray-600 rounded-full w-2 h-2 flex justify-center cursor-pointer"
+        onClick={(e) => {
+          data?.deleteNode(id);
+        }}
+      >
+        <p className="close">X</p>
+      </div>
       <Handle
         type="source"
         position="bottom"
-        id={`${data.id}.left`}
-        style={{ 
-            bottom: -2,
-            backgroundColor: "yellow",
-            borderStyle: "solid",
-            borderColor: "black" 
-       }}
+        id={`${id}.left`}
+        className="handle-yellow !w-2 !h-2 !border !border-gray-800"
       />
     </div>
+    // </div>
   );
 };
 
 const CircleNode2 = ({ data, id }) => {
   return (
     <div
-      style={{
-        borderColor: "green",
-        borderStyle: "solid",
-        borderRadius: "100%",
-        height: "20px",
-        width: "20px",
-      }}
+      className="relative border-cause h-8 w-8 border-2 rounded-full bg-black bg-opacity-10"
+      onClick={data.onClickNode}
+    >
+      <div className="mt-7 text-center flex justify-center">
+        <span>{data.content}</span>
+      </div>
+      <div
+        className="absolute top-0 -right-0.5 bg-gray-600 rounded-full w-2 h-2 flex justify-center cursor-pointer"
+        onClick={(e) => {
+          data?.deleteNode(id);
+        }}
       >
-        <div
-            className="circle-close-icon"
-            style={{ cursor: "pointer" }}
-            onClick={(e) =>{
-              data?.deleteNode(id)}
-            }
-        >
-            <p style={{fontSize: "6px", color: "white"}}>X</p>
-        </div>
+        <p className="close">X</p>
+      </div>
       <Handle
         type="target"
         position="top"
-        id={`${data.id}.left`}
-        style={{ 
-            top: -2,
-            backgroundColor: "#70AD47",
-            borderStyle: "solid",
-            borderColor: "black" 
-       }}
+        id={`${id}.left`}
+        className="handle-green !w-2 !h-2 !border !border-gray-800"
       />
     </div>
   );
 };
 
 const DottedRectangleNode = ({ data, id }) => {
-    return (
-        <div style={{ height: "250px", width: "200px", borderStyle: "dotted", borderColor: "blue" }}>
+  return (
+    <div onClick={data.onClickNode}>
+      <div>{data.content}</div>
+      <div className="relative border-entity h-80 w-64 border-2 border-dotted">
         <div
-            className="dottedrectangle-close-icon"
-            style={{ cursor: "pointer" }}
-            onClick={(e) =>{
-              data?.deleteNode(id)}
-            }
+          className="absolute -top-1 -right-1 bg-gray-600 rounded-full w-2 h-2 flex justify-center cursor-pointer"
+          onClick={(e) => {
+            data?.deleteNode(id);
+          }}
         >
-            <p style={{fontSize: "6px", color: "white"}}>X</p>
+          <p className="close">X</p>
         </div>
-           <Handle
-            type="source"
-            position="top"
-            id={`${data.id}.top`}
-            style={{ 
-                borderRadius: 1,
-                height: "10px",
-                width: "20px",
-                backgroundColor: "white",
-                borderStyle: "solid",
-                borderColor: "black" 
-           }}
-          />
-          <div id={data.id}>{data.label}</div>
-          <Handle
-            type="target"
-            position="bottom"
-            id={`${data.id}.bottom`}
-            style={{ 
-                borderRadius: 1,
-                height: "10px",
-                width: "20px",
-                backgroundColor: "white",
-                borderStyle: "solid",
-                borderColor: "black" 
-           }}
-          />
-        </div>
-      );
-}
+        <Handle
+          type="source"
+          position="top"
+          id={`${id}.top`}
+          className="!bg-white !w-4 !h-2 !rounded-none !border !border-gray-800"
+        />
+        <Handle
+          type="target"
+          position="bottom"
+          id={`${id}.bottom`}
+          className="!bg-white !w-4 !h-2 !rounded-none !border !border-gray-800"
+        />
+      </div>
+    </div>
+  );
+};
 
 export const nodeTypes = {
   circle1: CircleNode1,
   circle2: CircleNode2,
   rectangle: RectangleNode,
-  dottedrectangle: DottedRectangleNode
+  dottedrectangle: DottedRectangleNode,
 };

@@ -3,160 +3,61 @@ body {
   margin: 0;
 }
 
-.dndflow {
-  /* flex-direction: column; */
-  display: flex;
-  /* flex-grow: 1; */
-  height: 100%;
-}
-
-.dndflow aside {
-  border-right: 1px solid #eee;
-  padding: 15px 10px;
-  font-size: 12px;
-  background: #fcfcfc;
-}
-
-.dndflow aside .description {
-  margin-bottom: 10px;
-}
-
-.flex-container {
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.flex-container > div {
-  margin-left: 10px;
-}
-
-.dndflow .dndnode1 {
-  height: 30px;
-  padding: 4px;
+.entity-btn {
   border: 1px solid #1a192b;
-  border-radius: 3px;
-  margin-bottom: 10px;
   background-color: #486ec2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: grab;
 }
 
-.dndflow .dndnode2 {
-  height: 30px;
-  padding: 4px;
-  border: 1px solid #534dce;
-  border-radius: 3px;
-  margin-bottom: 10px;
-  background-color: #FFC000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: grab;
-}
-
-.dndflow .dndnode3 {
-  height: 30px;
-  padding: 4px;
+.event-btn {
   border: 1px solid #1a192b;
-  border-radius: 3px;
-  margin-bottom: 10px;
-  background-color: #ED7D31;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: grab;
+  background-color: #ffc000;
 }
 
-.dndflow .dndnode4 {
-  height: 30px;
-  padding: 4px;
+.test-btn {
   border: 1px solid #1a192b;
-  border-radius: 3px;
-  margin-bottom: 10px;
-  background-color: #ED7D31;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: grab;
+  background-color: #ed7d31;
+}
+
+.cause-btn {
+  border: 1px solid #1a192b;
+  background-color: #70ad47;
 }
 
 .switchMode {
-  height: 30px;
   border: 1px solid #1a192b;
-  border-radius: 3px;
-  cursor: grab;
 }
 
-.rectangle-close-icon {
-  position: absolute;
-  top: -5px;
-  right: -4px;
-  background-color: #3B3838;
-  border-radius: 40px;
-  width: 7px;
-  height: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1px;
+.close {
+  font-size: 6px;
+  color: white;
 }
 
-.circle-close-icon {
-  position: absolute;
-  top: 0px;
-  right: -2px;
-  background-color: #3B3838;
-  border-radius: 40px;
-  width: 7px;
-  height: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1px;
+.border-entity {
+  border-color: #4472c4;
 }
 
-.dottedrectangle-close-icon {
-  position: absolute;
-  top: -4px;
-  right: -3px;
-  background-color: #3B3838;
-  border-radius: 40px;
-  width: 7px;
-  height: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1px;
+.border-event {
+  border-color: #ffc000;
 }
 
-.dndflow .dndnode.input {
-  border-color: #0041d0;
+.border-test {
+  border-color: #ed7d31;
 }
 
-.dndflow .dndnode.output {
-  border-color: #ff0072;
+.border-cause {
+  border-color: #00b050;
 }
 
-.dndflow .reactflow-wrapper {
-  flex-grow: 1;
-  height: 100%;
+.handle-yellow {
+  background-color: #ffc000 !important;
 }
 
-.dndflow .selectall {
-  margin-top: 10px;
+.handle-green {
+  background-color: #70ad47 !important;
 }
 
-.sideBar {
-  /* margin-top: 30px; */
-  flex-basis: 100px;
-  background-color: darkgrey !important;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.handle-red {
+  background-color: #ff0000 !important;
 }
 
 .react-flow__attribution a {
@@ -164,19 +65,6 @@ body {
   display: none;
 }
 
-.react-flow__controls {
-  left: auto;
-  right: 10px;
-  /* bottom: auto; */
-}
-
-@media screen and (min-width: 1500px) {
-  .dndflow {
-    flex-direction: row;
-  }
-
-  .dndflow aside {
-    width: 100%;
-    max-width: 250px;
-  }
+.react-flow__node-dottedrectangle {
+  z-index: -1 !important;
 }
